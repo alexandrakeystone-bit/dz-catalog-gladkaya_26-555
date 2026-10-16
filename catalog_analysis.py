@@ -85,7 +85,7 @@ movies = [
 
 
 def average_rating(movies):
-    """Средняя оценка по каталогу, округлённая до 1 знака."""
+    """Средняя оценка по каталогу, округленная до 1 знака."""
     total = 0.0
     for movie in movies:
         total += movie["rating"]
@@ -136,6 +136,36 @@ def decade_label(year):
             return "старые"
 
 
+def print_non_comedy(movies):
+    """Печатает названия фильмов, которые не относятся к жанру 'comedy'."""
+    for movie in movies:
+        if "comedy" in movie["genres"]:
+            continue
+        print(movie["title"])
+
+
+def find_first_masterpiece(movies):
+    """Печатает первый фильм с рейтингом > 9.0. Если нет — сообщение."""
+    index = 0
+    while index < len(movies):
+        movie = movies[index]
+        if movie["rating"] > 9.0:
+            print("Первый шедевр:", movie["title"])
+            break
+        index += 1
+    else:
+        print("Шедевров не найдено")
+
+
+def count_long_movies(movies, threshold=120):
+    """Считает фильмы длиннее 120 минут (строго больше)."""
+    count = 0
+    for movie in movies:
+        if movie["duration_min"] > threshold:
+            count += 1
+    return count
+
+
 if __name__ == "__main__":
     print("Средняя оценка:", average_rating(movies))
     print("Возрасты:", catalog_age_stats(movies))
@@ -146,3 +176,19 @@ if __name__ == "__main__":
 
     for y in (2011, 2014, 2015, 2020, 2021, 2024):
         print(f"year={y} -> {decade_label(y)}")
+
+    print("\n--- Фильмы не-comedy ---")
+    print_non_comedy(movies)
+
+    print("\n--- Первый шедевр ---")
+    find_first_masterpiece(movies)
+
+    print("\n--- Шедевры не найдены (проверка else) ---")
+    movies_without_masterpiece = [
+        m for m in movies if m["title"] != "The Quiet Algorithm"
+    ]
+    find_first_masterpiece(movies_without_masterpiece)
+
+    print("\n--- Фильмы длиннее 120 минут ---")
+    print("Количество:", count_long_movies(movies))
+    print("Длиннее 130:", count_long_movies(movies, threshold=130))
