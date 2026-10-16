@@ -137,7 +137,7 @@ def decade_label(year):
 
 
 def print_non_comedy(movies):
-    """Печатает названия фильмов, которые не относятся к жанру 'comedy'."""
+    """Печатает названия фильмов, которые НЕ относятся к жанру 'comedy'."""
     for movie in movies:
         if "comedy" in movie["genres"]:
             continue
@@ -166,6 +166,31 @@ def count_long_movies(movies, threshold=120):
     return count
 
 
+def normalize_title(title):
+    """Приводит строку к Title Case без использования str.title()."""
+    words = title.split()
+    normalized_words = []
+    for word in words:
+        if word:
+            normalized_words.append(word[0].upper() + word[1:].lower())
+    return " ".join(normalized_words)
+
+
+def make_slug(title):
+    """Превращает название в slug: 'Silent Hours' -> 'silent-hours'."""
+    return title.lower().replace(" ", "-")
+
+
+def format_report_line(movie):
+    """Одна строка отчета о фильме."""
+    title = movie["title"]
+    year = movie["year"]
+    rating = movie["rating"]
+    duration = duration_in_hours(movie["duration_min"])
+    genres = ", ".join(sorted(movie["genres"]))
+    return f"'{title}' ({year}) — {rating}/10, {duration}, жанры: {genres}"
+
+
 if __name__ == "__main__":
     print("Средняя оценка:", average_rating(movies))
     print("Возрасты:", catalog_age_stats(movies))
@@ -192,3 +217,14 @@ if __name__ == "__main__":
     print("\n--- Фильмы длиннее 120 минут ---")
     print("Количество:", count_long_movies(movies))
     print("Длиннее 130:", count_long_movies(movies, threshold=130))
+
+    print("\n--- Этап 4: строки ---")
+    print(normalize_title("silent hours"))
+    print(normalize_title("midnight in oslo"))
+    print(make_slug("Silent Hours"))
+    print(make_slug("The Quiet Algorithm"))
+    print(format_report_line(movies[7]))
+
+    print("\n--- Отчет по всем фильмам ---")
+    for movie in movies:
+        print(format_report_line(movie))
