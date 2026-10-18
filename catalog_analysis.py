@@ -233,6 +233,35 @@ def above_average_ratings(movies):
         if movie["rating"] > avg
     }
 
+
+def all_genres(movies):
+    """Возвращает множество всех уникальных жанров."""
+    genres = set()
+    for movie in movies:
+        genres.update(movie["genres"])
+    return genres
+
+
+def common_actors(movie1, movie2):
+    """Возвращает множество актеров, снимавшихся в обоих фильмах."""
+    # Превращаем списки актеров во множества и находим пересечение
+    return set(movie1["actors"]) & set(movie2["actors"])
+
+
+def genres_only_in_one(movies_a, movies_b):
+    """Возвращает жанры, которые есть в movies_a, но отсутствуют в movies_b."""
+    genres_a = set()
+    genres_b = set()
+
+    for movie in movies_a:
+        genres_a.update(movie["genres"])
+
+    for movie in movies_b:
+        genres_b.update(movie["genres"])
+
+    return genres_a - genres_b
+
+
 if __name__ == "__main__":
     print("Средняя оценка:", average_rating(movies))
     print("Возрасты:", catalog_age_stats(movies))
@@ -304,3 +333,16 @@ if __name__ == "__main__":
     above_avg = above_average_ratings(movies)
     for title, rating in above_avg.items():
         print(f"  {title}: {rating}")
+
+
+    print("\n--- Этап 7: множества ---")
+
+    print("Все уникальные жанры в каталоге:")
+    # sorted() нужен, чтобы жанры выводились по алфавиту, а не в случайном порядке
+    print(" ", sorted(all_genres(movies)))
+
+    print("\nОбщие актеры в movies[0] (The Dune Chronicles) и movies[3] (Comet Racers):")
+    print(" ", common_actors(movies[0], movies[3]))
+
+    print("\nЖанры, которые есть в movies[5:6] (midnight in oslo), но нет в movies[:5]:")
+    print(" ", genres_only_in_one(movies[5:6], movies[:5]))
