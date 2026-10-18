@@ -191,6 +191,18 @@ def format_report_line(movie):
     return f"'{title}' ({year}) — {rating}/10, {duration}, жанры: {genres}"
 
 
+def titles_sorted_by_rating(movies):
+    """Список названий фильмов, отсортированных по убыванию рейтинга."""
+    sorted_movies = sorted(movies, key=lambda m: m["rating"], reverse=True)
+    return [movie["title"] for movie in sorted_movies]
+
+
+def top_n_by_rating(movies, n=3):
+    """Топ-n фильмов по рейтингу: список кортежей (title, rating)."""
+    sorted_movies = sorted(movies, key=lambda m: m["rating"], reverse=True)
+    return [(movie["title"], movie["rating"]) for movie in sorted_movies[:n]]
+
+
 if __name__ == "__main__":
     print("Средняя оценка:", average_rating(movies))
     print("Возрасты:", catalog_age_stats(movies))
@@ -228,3 +240,20 @@ if __name__ == "__main__":
     print("\n--- Отчет по всем фильмам ---")
     for movie in movies:
         print(format_report_line(movie))
+
+    
+    print("\n--- Этап 5: списки ---")
+    print("Названия по убыванию рейтинга:")
+    for title in titles_sorted_by_rating(movies):
+        print(" ", title)
+
+    print("\nТоп-3 по рейтингу:")
+    for title, rating in top_n_by_rating(movies, 3):
+        print(f"  {title} — {rating}")
+
+    print("\nТоп-5 по рейтингу:")
+    for title, rating in top_n_by_rating(movies, 5):
+        print(f"  {title} — {rating}")
+
+    print("\nПроверка: movies не отсортирован —")
+    print("  первый фильм в movies:", movies[0]["title"])
