@@ -183,7 +183,7 @@ def make_slug(title):
 
 def format_report_line(movie):
     """Одна строка отчета о фильме."""
-    title = movie["title"]
+    title = normalize_title(movie["title"])
     year = movie["year"]
     rating = movie["rating"]
     duration = duration_in_hours(movie["duration_min"])
@@ -269,7 +269,39 @@ def iter_high_rated(movies, min_rating=8.0):
             yield movie
 
 
+
+def build_report(movies):
+    """Собирает и печатает итоговый отчет по каталогу."""
+    print("ОТЧЕТ ПО КАТАЛОГУ")
+    
+    # 1. Общая статистика
+    avg_rating = average_rating(movies)
+    _, _, avg_age = catalog_age_stats(movies)
+    print(f"Средний рейтинг: {avg_rating}")
+    print(f"Средний возраст фильмов: {avg_age} лет")
+
+    # 2. Топ-3 фильма
+    print("\nТоп-3 фильма:")
+    top_3 = top_n_by_rating(movies, 3)
+    for title, rating in top_3:
+        movie = next(m for m in movies if m["title"] == title)
+        print(f"  {format_report_line(movie)}")
+
+    # 3. Количество фильмов по жанрам
+    print("\nФильмов по жанрам:")
+    genre_counts = count_by_genre(movies)
+    sorted_genres = sorted(genre_counts.items(), key=lambda x: (-x[1], x[0]))
+    for genre, count in sorted_genres:
+        print(f"  {genre} — {count}")
+
+    # 4. Все жанры
+    print("\nВсе жанры каталога:", end=" ")
+    genres_list = sorted(all_genres(movies))
+    print(", ".join(genres_list))
+
+
 if __name__ == "__main__":
+    """
     print("Средняя оценка:", average_rating(movies))
     print("Возрасты:", catalog_age_stats(movies))
     print("Длительность 155 мин:", duration_in_hours(155))
@@ -366,3 +398,7 @@ if __name__ == "__main__":
     # Генераторное выражение передается прямо в sum()
     total_duration = sum(m["duration_min"] for m in movies if m["rating"] > 7)
     print(" ", total_duration)
+    """
+
+    print("\n" + "=" * 40)
+    build_report(movies)
